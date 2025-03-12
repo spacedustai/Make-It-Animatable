@@ -1,0 +1,6 @@
+[submodule "util/auto_rig_pro"]
+	path = util/auto_rig_pro
+	url = https://github.com/jasongzy/auto_rig_pro
+[submodule "util/3dgs-render-blender-addon"]
+	path = util/3dgs-render-blender-addon
+	url = https://github.com/Kiri-Innovation/3dgs-render-blender-addon

@@ -697,7 +697,7 @@ def pose_local_to_global(
             rotation axis: global coordinates; rotation origin: source joint with target-posed (or source-posed if `relative_to_source`) parents
         joints: (..., K, 3)
         parents: (K,)
-            parent indices from the kinematic tree (root joint has no effect; make sure chidren appear after parents)
+            parent indices from the kinematic tree (root joint has no effect; make sure children appear after parents)
 
     Returns:
         pose_global: (..., K, 4, 4)
@@ -749,7 +749,7 @@ def pose_rot_to_global(
             global rotations
         joints: (..., K, 3)
         parents: (K,)
-            parent indices from the kinematic tree (root joint has no effect; make sure chidren appear after parents)
+            parent indices from the kinematic tree (root joint has no effect; make sure children appear after parents)
 
     Returns:
         pose_global: (..., K, 4, 4)

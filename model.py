@@ -227,7 +227,7 @@ class PCAE(nn.Module):
         super().__init__()
 
         self.N = N
-        self.base = create_autoencoder(dim=512, M=num_latents, N=self.N, latent_dim=8, determinisitc=deterministic)
+        self.base = create_autoencoder(dim=512, M=num_latents, N=self.N, latent_dim=8, deterministic=deterministic)
         embed_dim = self.base.point_embed.mlp.out_features
         feat_dim = self.base.decoder_cross_attn.fn.to_out.out_features
 
@@ -593,7 +593,7 @@ class PCAE(nn.Module):
             self.global_embed if self.predict_global_trans else None,
             self.pose_embed if self.predict_pose_trans else None,
         )
-        learnbale_embeddings_length = [0 if x is None else x.shape[1] for x in learnable_embeddings]
+        learnable_embeddings_length = [0 if x is None else x.shape[1] for x in learnable_embeddings]
         learnable_embeddings = [x for x in learnable_embeddings if x is not None]
         if learnable_embeddings:
             learnable_embeddings = torch.cat(learnable_embeddings, dim=1)
@@ -609,13 +609,13 @@ class PCAE(nn.Module):
         if self.predict_pose_trans and self.pose_input_joints:
             assert joints is not None and joints.shape[:-1] == (pc.shape[0], self.pose_embed.shape[1])
             joints_embed = self.joints_embedder(joints)
-            pose_embed_length = learnbale_embeddings_length[2]
+            pose_embed_length = learnable_embeddings_length[2]
             learnable_embeddings[:, -pose_embed_length:] = learnable_embeddings[:, -pose_embed_length:] + joints_embed
 
         logits = self.decode(x, queries, learnable_embeddings)
         if learnable_embeddings is not None:
             logits, logits_joints, logits_global, logits_pose = torch.split(
-                logits, [queries.shape[1]] + learnbale_embeddings_length, dim=1
+                logits, [queries.shape[1]] + learnable_embeddings_length, dim=1
             )
 
         if self.predict_bw:

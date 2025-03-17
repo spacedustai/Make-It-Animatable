@@ -301,7 +301,7 @@ def get_loss(output: Output, gt: GT, criterion: torch.nn.Module, args):
     from util.dataset_mixamo import rest_prior_loss_fn
 
     if args.use_additional_bones:
-        from util.dataset_mixamo_additonal import KINEMATIC_TREE, connect_loss_fn
+        from util.dataset_mixamo_additional import KINEMATIC_TREE, connect_loss_fn
     else:
         from util.dataset_mixamo import KINEMATIC_TREE, connect_loss_fn
 

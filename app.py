@@ -29,10 +29,10 @@ from util.dataset_mixamo import (
     Joint,
     get_hips_transform,
 )
-from util.dataset_mixamo_additonal import BONES_IDX_DICT as BONES_IDX_DICT_ADD
-from util.dataset_mixamo_additonal import JOINTS_NUM as JOINTS_NUM_ADD
-from util.dataset_mixamo_additonal import KINEMATIC_TREE as KINEMATIC_TREE_ADD
-from util.dataset_mixamo_additonal import TEMPLATE_PATH as TEMPLATE_PATH_ADD
+from util.dataset_mixamo_additional import BONES_IDX_DICT as BONES_IDX_DICT_ADD
+from util.dataset_mixamo_additional import JOINTS_NUM as JOINTS_NUM_ADD
+from util.dataset_mixamo_additional import KINEMATIC_TREE as KINEMATIC_TREE_ADD
+from util.dataset_mixamo_additional import TEMPLATE_PATH as TEMPLATE_PATH_ADD
 from util.utils import (
     TimePrints,
     Timing,
@@ -786,7 +786,7 @@ def infer(input_normal: bool, db: DB):
     verts_normal = db.verts_normal
 
     if input_normal and not db.is_mesh:
-        raise gr.Error("Normals are not avaliable for point clouds or Gaussian Splats")
+        raise gr.Error("Normals are not available for point clouds or Gaussian Splats")
 
     # Norm data & infer the main model
     norm = get_normalize_transform(pts, keep_ratio=True, recenter=False)
@@ -1311,7 +1311,7 @@ def init_blocks():
                         with gr.Accordion("Input Settings", open=True):
                             input_no_fingers = gr.Checkbox(
                                 label="No Fingers",
-                                info="Whether the input model does not have ten seperate fingers. Can also be used if the output has unsatisfactory finger results.",
+                                info="Whether the input model does not have ten separate fingers. Can also be used if the output has unsatisfactory finger results.",
                                 value=True,
                                 interactive=True,
                             )

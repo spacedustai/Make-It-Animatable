@@ -26,7 +26,7 @@ from util.utils import (
 
 USE_ADDITIONAL_BONES = False
 if USE_ADDITIONAL_BONES:
-    from util.dataset_mixamo_additonal import BONES_IDX_DICT, JOINTS_NUM, KINEMATIC_TREE, MixamoDataset
+    from util.dataset_mixamo_additional import BONES_IDX_DICT, JOINTS_NUM, KINEMATIC_TREE, MixamoDataset
 else:
     from util.dataset_mixamo import BONES_IDX_DICT, JOINTS_NUM, KINEMATIC_TREE, MixamoDataset
 

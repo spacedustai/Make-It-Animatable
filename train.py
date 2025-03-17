@@ -148,7 +148,7 @@ def main(args):
     fix_random(args.seed + misc.get_rank())
 
     if args.use_additional_bones:
-        from util.dataset_mixamo_additonal import JOINTS_NUM, KINEMATIC_TREE, MixamoDataset
+        from util.dataset_mixamo_additional import JOINTS_NUM, KINEMATIC_TREE, MixamoDataset
     else:
         from util.dataset_mixamo import JOINTS_NUM, KINEMATIC_TREE, MixamoDataset
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-# Make-It-Animatable: An Efficient Framework for Authoring Animation-Ready 3D Characters <br> (CVPR 2025)
+# Make-It-Animatable: An Efficient Framework for Authoring Animation-Ready 3D Characters <br> (CVPR 2025 Highlight)
 
 _**<a href="https://jasongzy.github.io">Zhiyang Guo</a>,
 Jinxu Xiang,

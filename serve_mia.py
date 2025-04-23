@@ -51,7 +51,10 @@ from app import (  # type: ignore  pylint: disable=wrong-import-position
 UPLOAD_DIR = pathlib.Path("/tmp")        # Cloud-Run tmpfs
 OUTPUT_BUCKET = os.getenv("OUTPUT_BUCKET", "mia-results")
 
-gcs = storage.Client()
+if os.getenv("DISABLE_GCS") == "1":
+    gcs = None                       # skip GCS when running locally
+else:
+    gcs = storage.Client()
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
 def split_gs(gs_uri: str) -> tuple[str, str]:
@@ -113,8 +116,14 @@ def run_mia_service(
 
         local_anim: pathlib.Path | None = None
         if animation_uri:
-            local_anim = tmp / pathlib.Path(animation_uri).name
-            gcs_download(animation_uri, local_anim)
+            if animation_uri.startswith("gs://"):
+                local_anim = tmp / pathlib.Path(animation_uri).name
+                gcs_download(animation_uri, local_anim)
+            else:
+                # Treat as local file path
+                local_anim = pathlib.Path(animation_uri)
+                if not local_anim.exists():
+                    raise ValueError(f"Local animation file not found: {animation_uri}")
 
         # choose output dir
         out_dir = pathlib.Path(cfg.output_dir) if cfg.output_dir else tmp / "out"
@@ -158,27 +167,39 @@ def run_mia_service(
         )
 
         # 5 Generate animation (+ retarget)
+        # make rest_parts safe
+        safe_parts = cfg.rest_parts or []
+
+        # resolve animation path
+        anim_path = str(local_anim) if local_anim else None
+        
+        print("Running Blender step to generate animation")
         db = extract_db(
             vis_blender(
                 cfg.reset_to_rest,
                 cfg.no_fingers,
                 cfg.rest_pose,
-                cfg.rest_parts,
-                str(local_anim) if local_anim else None,
+                safe_parts,
+                anim_path,
                 cfg.retarget,
                 cfg.inplace,
                 db,
             )
         )
-
         # final GLB to return = db.anim_vis_path
         rigged_glb = pathlib.Path(db.anim_vis_path)
-        if not rigged_glb.exists():
-            raise RuntimeError("Make-It-Animatable did not produce anim_vis GLB")
 
-        # cleanup GPU memory
+
+        if not rigged_glb.exists():
+            raise RuntimeError("Make-It-Animatable did not produce an output GLB")
+
+        # Upload to GCS before temp dir is deleted
+        result_uri = f"gs://{OUTPUT_BUCKET}/rigs/{rigged_glb.name}"
+        gcs_upload(rigged_glb, result_uri)
+
         clear(db)
-        return rigged_glb
+        return result_uri
+        
 
 # ── FastAPI service layer ───────────────────────────────────────────────────
 class RigRequest(BaseModel):
@@ -200,14 +221,11 @@ def health():
 def rig(req: RigRequest):
     job_id = str(uuid.uuid4())
     try:
-        local_glb = run_mia_service(
+        result_uri = run_mia_service(
             input_uri=req.input_uri,
             cfg=req.config,
             animation_uri=req.animation_uri,
         )
-        result_uri = f"gs://{OUTPUT_BUCKET}/rigs/{local_glb.name}"
-        gcs_upload(local_glb, result_uri)
-
         return RigResponse(job_id=job_id, result_uri=result_uri)
 
     except Exception as exc:
@@ -217,4 +235,3 @@ def rig(req: RigRequest):
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8080))
     uvicorn.run("serve_mia:app", host="0.0.0.0", port=port, workers=1)
-    

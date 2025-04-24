@@ -4,9 +4,6 @@ docker build -t us-docker.pkg.dev/$PROJECT_ID/mia/mia:latest .
 # or Cloud Build
 gcloud builds submit --tag us-docker.pkg.dev/$PROJECT_ID/mia/mia:latest .
 
-# Build in Cloud Build (recommended)
-gcloud builds submit --tag \
-  us-docker.pkg.dev/$PROJECT_ID/mia/mia:latest .
 
 # Then deploy to Cloud Run GPU
 gcloud run deploy mia \

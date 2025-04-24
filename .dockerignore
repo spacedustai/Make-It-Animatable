@@ -6,3 +6,6 @@
 __pycache__/
 *.pt
 *.ckpt
+data/Mixamo/animation/
+data/Mixamo/animation_extra/
+data/examples

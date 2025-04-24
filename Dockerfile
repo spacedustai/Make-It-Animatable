@@ -47,7 +47,14 @@ RUN wget -qO blender.tar.xz https://download.blender.org/release/Blender4.2/blen
 ENV PATH="/opt/blender:$PATH"
 
 # ───── Copy repo & weights ────────────────────────────────────────────────
-COPY ["./", "/app/"]
+#Copy essentials first
+COPY ["./app.py", "./serve_mia.py", "./app_blender.py", "engine.py", "model.py", "models_ae.py", "test.py",  "/app/"]
+COPY ["./util", "/app/util/"]
+# Copy just the needed data files
+COPY ["./data/Mixamo/bones.fbx", "./data/Mixamo/bones_vroid.fbx", "/app/data/Mixamo/"]
+COPY ["./data/Standard Run.fbx", "/app/data/"]
+# Copy weights
+COPY ["./output", "/app/output/"]
 WORKDIR /app
 
 # ───── Default runtime env ────────────────────────────────────────────────

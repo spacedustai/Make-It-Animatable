@@ -220,6 +220,13 @@ def health():
 @app.post("/rig", response_model=RigResponse)
 def rig(req: RigRequest):
     job_id = str(uuid.uuid4())
+    # Debug print input parameters
+    print(f"DEBUG - Input parameters:")
+    print(f"  job_id: {job_id}")
+    print(f"  input_uri: {req.input_uri}")
+    print(f"  animation_uri: {req.animation_uri}")
+    print(f"  config: {json.dumps(req.config.model_dump(), indent=2)}")
+    
     try:
         result_uri = run_mia_service(
             input_uri=req.input_uri,

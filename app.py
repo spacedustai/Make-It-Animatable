@@ -1083,7 +1083,7 @@ def vis_blender(
                 if inplace:
                     cmd += " --inplace"
             cmd += " > /dev/null 2>&1"
-            # print(cmd)
+            print(cmd)
             os.system(cmd)
 
     print(f"Output animatable model: '{db.anim_path}'")
@@ -1093,7 +1093,7 @@ def vis_blender(
             # https://github.com/facebookincubator/FBX2glTF
             fbx2glb_cmd = f"util/FBX2glTF --binary --compute-normals always --fbx-temp-dir '{tmpdir}' --input '{os.path.abspath(db.anim_path)}' --output '{os.path.abspath(db.anim_vis_path)}'"
             fbx2glb_cmd += " > /dev/null 2>&1"
-            #print(fbx2glb_cmd)
+            print(fbx2glb_cmd)
             os.system(fbx2glb_cmd)
             print(f"Output visualization: '{db.anim_vis_path}'")
     else:
